@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue'
 import draggable from 'vuedraggable'
 import { useIconsStore } from '@/stores/icons'
 
-const draggables = ref([
+const draggables = ref<Array<{ name: string, id: number }>>([
 ])
 
 const icons = useIconsStore()

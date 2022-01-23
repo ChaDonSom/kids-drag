@@ -13,7 +13,7 @@ export const useIconsStore = defineStore({
         async getIcons() {
             let codepoints = await axios.get("https://raw.githubusercontent.com/google/material-design-icons/master/font/MaterialIcons-Regular.codepoints")
             console.log('codepoints: ', codepoints);
-            this.icons = codepoints.data.split('\n').map(line => line.split(' ')[0])
+            this.icons = codepoints.data.split('\n').map((line: any) => line.split(' ')[0])
         }
     }
 })
