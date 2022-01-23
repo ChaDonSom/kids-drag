@@ -1,7 +1,6 @@
 #!/bin/bash
 
-sed -i 's/\/index\./index\./g' ./dist/index.html
-sed -i 's/\/vendor\./vendor\./g' ./dist/index.html
+sed -i 's/\/assets/assets/g' ./dist/index.html
 
 git add .
 
