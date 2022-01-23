@@ -28,12 +28,13 @@ function add() {
   })
 }
 
-function getCorrectTextColor(hex: string) {
+function getCorrectTextColor(hex?: string | false) {
   /*
   From this W3C document: http://www.webmasterworld.com/r.cgi?f=88&d=9769&url=http://www.w3.org/TR/AERT#color-contrast
   Color brightness is determined by the following formula: 
   ((Red value X 299) + (Green value X 587) + (Blue value X 114)) / 1000
   */
+  if (!hex) return 'black'
   let threshold = 130; /* about half of 256. Lower threshold equals more dark text on dark background  */
   let hRed = hexToR(hex);
   let hGreen = hexToG(hex);
@@ -99,7 +100,14 @@ onMounted(() => icons.getIcons())
             class="rounded-3xl h-24 w-24 flex border-2 border-black"
             :style="{ backgroundColor: element.color }"
         >
-          <div class="m-auto material-icons" :style="{ color: getCorrectTextColor(colorNameToHex(element.color)) }">{{ element.name }}</div>
+          <div
+              class="m-auto material-icons"
+              :style="{
+                color: getCorrectTextColor(colorNameToHex(element.color))
+              }"
+          >
+            {{ element.name }}
+          </div>
         </div>
       </template>
     </draggable>
