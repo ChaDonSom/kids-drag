@@ -1,10 +1,25 @@
-#!/bin/bash
+#!/usr/bin/env sh
 
-sed -i 's/\/assets/assets/g' ./dist/index.html
-sed -i 's/\/favicon/favicon/g' ./dist/index.html
+# abort on errors
+set -e
 
-git add .
+# build
+npm run build
 
-git commit -m "deploy script"
+# navigate into the build output directory
+cd dist
 
-git subtree push --prefix dist origin gh-pages
+# if you are deploying to a custom domain
+# echo 'www.example.com' > CNAME
+
+git init
+git add -A
+git commit -m 'deploy'
+
+# if you are deploying to https://<USERNAME>.github.io
+# git push -f git@github.com:<USERNAME>/<USERNAME>.github.io.git main
+
+# if you are deploying to https://<USERNAME>.github.io/<REPO>
+git push -f git@github.com:ChaDonSom/kids-drag.git master:gh-pages
+
+cd -
