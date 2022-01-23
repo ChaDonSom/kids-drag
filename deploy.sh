@@ -1,6 +1,7 @@
 #!/bin/bash
 
 sed -i 's/\/assets/assets/g' ./dist/index.html
+sed -i 's/\/favicon/favicon/g' ./dist/index.html
 
 git add .
 
