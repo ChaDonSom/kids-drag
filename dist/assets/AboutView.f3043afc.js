@@ -1,1 +1,0 @@
-import{o as a,a as c,e as n}from"./vendor.7f95c2c0.js";var r=(e,t)=>{const o=e.__vccOpts||e;for(const[s,_]of t)o[s]=_;return o};const i={},u={class:"about"},d=n("h1",null,"This is an about page",-1),l=[d];function v(e,t){return a(),c("div",u,l)}var p=r(i,[["render",v]]);export{p as default};
