@@ -173,4 +173,7 @@ onMounted(() => icons.getIcons())
   transition: opacity 200ms ease-out,
     transform 350ms ease-out;
 }
+.fly-move {
+  transition: transform 250ms ease;
+}
 </style>
