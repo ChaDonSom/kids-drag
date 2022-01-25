@@ -45,7 +45,7 @@ function shuffle() {
   draggables.value = shuffleArray(draggables.value)
 }
 
-function shuffleArray(array: Array<T>): Array<T> {
+function shuffleArray<T>(array: Array<T>): Array<T> {
   let currentIndex = array.length,  randomIndex;
 
   // While there remain elements to shuffle...
