@@ -2,8 +2,9 @@
 import { onMounted, ref } from 'vue'
 import draggable from 'vuedraggable'
 import { useIconsStore } from '@/stores/icons'
+import goldfishImage from '@/assets/goldfish.png'
 
-const draggables = ref<Array<{ name: string, id: number, color: string }>>([
+const draggables = ref<Array<{ name?: string, img?: string, id: number, color: string }>>([
 ])
 
 /**
@@ -28,6 +29,14 @@ const icons = useIconsStore()
 function add() {
   draggables.value.push({
     name: icons.icons[Math.floor(Math.random() * icons.icons.length)],
+    color: colors.value[Math.floor(Math.random() * colors.value.length)],
+    id: Math.random()
+  })
+}
+
+function addFish() {
+  draggables.value.push({
+    img: goldfishImage,
     color: colors.value[Math.floor(Math.random() * colors.value.length)],
     id: Math.random()
   })
@@ -139,24 +148,33 @@ onMounted(() => icons.getIcons())
             :style="{ backgroundColor: element.color }"
         >
           <div
-              class="m-auto material-icons"
+              class="m-auto"
+              :class="{
+                'material-icons' : element.name
+              }"
               :style="{
                 color: getCorrectTextColor(colorNameToHex(element.color))
               }"
           >
-            {{ element.name }}
+            <span v-if="element.name">{{ element.name }}</span>
+            <img v-if="element.img" :src="element.img">
           </div>
         </div>
       </template>
     </draggable>
   </div>
   <div class="my-5">
+    <button class="fixed bottom-6 right-24 bg-gray-100 rounded-3xl h-12 w-12 flex border-2 border-gray-200"
+        @click="addFish"
+    >
+      <div class="m-auto material-icons">set_meal</div>
+    </button>
     <button class="fixed bottom-6 right-6 bg-gray-100 rounded-3xl h-12 w-12 flex border-2 border-gray-200"
         @click="add"
     >
       <div class="m-auto material-icons">add</div>
     </button>
-    <button class="fixed bottom-6 right-24 bg-gray-100 rounded-3xl h-12 w-12 flex border-2 border-gray-200"
+    <button class="fixed bottom-6 right-33 bg-gray-100 rounded-3xl h-12 w-12 flex border-2 border-gray-200"
         @click="remove"
     >
       <div class="m-auto material-icons">remove</div>

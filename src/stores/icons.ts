@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 export const useIconsStore = defineStore({
     id: 'icons',
     state: () => ({
-        icons: []
+        icons: [] as string[]
     }),
     getters: {
         // doubleCount: (state) => state.counter * 2
