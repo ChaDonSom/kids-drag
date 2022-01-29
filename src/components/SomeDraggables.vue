@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import draggable from 'vuedraggable'
 import { useIconsStore } from '@/stores/icons'
 import goldfishImage from '@/assets/goldfish.png'
 
-const draggables = ref<Array<{ name?: string, img?: string, id: number, color: string }>>([
+const draggables = ref<Array<{ name?: string, img?: string, id: number, color: string, chosen?: boolean }>>([
 ])
 
 /**
@@ -30,7 +30,8 @@ function add() {
   draggables.value.push({
     name: icons.icons[Math.floor(Math.random() * icons.icons.length)],
     color: colors.value[Math.floor(Math.random() * colors.value.length)],
-    id: Math.random()
+    id: Math.floor(Math.random() * 10000000),
+    chosen: false,
   })
 }
 
@@ -38,12 +39,18 @@ function addFish() {
   draggables.value.push({
     img: goldfishImage,
     color: colors.value[Math.floor(Math.random() * colors.value.length)],
-    id: Math.random()
+    id: Math.floor(Math.random() * 10000000),
+    chosen: false,
   })
 }
 
 function remove() {
-  draggables.value.pop()
+  if (!chosenElement.value) draggables.value.pop()
+  else {
+    let index = draggables.value.findIndex(item => item.id == chosenElement.value)
+    if (index != -1) draggables.value.splice(index, 1)
+    else draggables.value.pop()
+  }
 }
 
 function reset() {
@@ -115,10 +122,20 @@ function colorNameToHex(color: string) {
 }
 
 onMounted(() => icons.getIcons())
+
+const chosenElement = ref(null)
+onMounted(() => {
+  document.body.addEventListener('click', event => {
+    if (event.target instanceof Element) {
+      if (!event.target.closest(`#draggable-element-${chosenElement.value}`)) chosenElement.value = null
+    }
+  })
+})
+watch(drag, value => value ? chosenElement.value = null : null)
 </script>
 
 <template>
-  <div class="fixed top-0 my-5 z-10 flex flex-row gap-5">
+  <div class="fixed top-0 my-5 z-20 flex flex-row gap-5">
     <button class="bg-gray-100 rounded-3xl h-12 w-12 flex align-center border-2 border-gray-200"
         @click="reset"
     >
@@ -136,7 +153,7 @@ onMounted(() => icons.getIcons())
     <draggable
         item-key="id"
         tag="transition-group"
-        :list="draggables"
+        v-model="draggables"
         :component-data="{ name: drag ? null : 'fly' }"
         :animation="200"
         @start="drag = true"
@@ -144,13 +161,20 @@ onMounted(() => icons.getIcons())
     >
       <template #item="{ element }">
         <div
-            class="rounded-3xl h-24 w-24 flex border-2 border-black"
+            :id="`draggable-element-${element.id}`"
+            class="relative rounded-3xl flex border-2 border-black h-24 w-24"
+            :class="{
+                'scale-150 z-10': chosenElement == element.id,
+            }"
+            style="translate: all 200ms ease-out; transform-origin: center;"
             :style="{ backgroundColor: element.color }"
+            @click.stop="chosenElement = element.id"
         >
           <div
               class="m-auto"
               :class="{
-                'material-icons' : element.name
+                'material-icons' : element.name,
+                'text-5xl': chosenElement == element.id,
               }"
               :style="{
                 color: getCorrectTextColor(colorNameToHex(element.color))
@@ -163,7 +187,7 @@ onMounted(() => icons.getIcons())
       </template>
     </draggable>
   </div>
-  <div class="my-5">
+  <div class="my-5 z-20">
     <button class="fixed bottom-6 right-24 bg-gray-100 rounded-3xl h-12 w-12 flex border-2 border-gray-200"
         @click="addFish"
     >
@@ -174,7 +198,8 @@ onMounted(() => icons.getIcons())
     >
       <div class="m-auto material-icons">add</div>
     </button>
-    <button class="fixed bottom-6 right-33 bg-gray-100 rounded-3xl h-12 w-12 flex border-2 border-gray-200"
+    <button class="fixed bottom-6 bg-gray-100 rounded-3xl h-12 w-12 flex border-2 border-gray-200"
+        style="right: 10.5rem;"
         @click="remove"
     >
       <div class="m-auto material-icons">remove</div>
